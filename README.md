@@ -36,13 +36,12 @@ To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show 
 
 > **Note:** The reference manual was run on Windows with WSL Ubuntu, where OpenMP used 32 threads and 16 threads gave about 9.6× speedup (sequential baseline 1.35 s). Here the programs ran on a VMware Ubuntu VM with only 4 logical CPUs, so speedup stops at about 2.8× with 4 threads and more threads give no further gain. Absolute times therefore differ from the manual.
 
-
 ---
 
 ## 📁 Repository Structure
 
 ```
-EXPT2-PGC/
+PGCEXPT-2/
 ├── README.md
 ├── results.txt
 ├── make_graphs.py
@@ -202,7 +201,8 @@ Efficiency = speedup / number of threads.
 - **Not perfectly linear:** 4 threads gave 2.8× instead of 4× because the VM's virtual CPUs are shared with the host and other programs. The five sequential runs varied from 3.33 to 4.20 s, so timings on this VM are noisy.
 - **Pthreads vs OpenMP:** performance was almost the same (1.342 s vs 1.329 s at 4 threads). OpenMP needs far less code, for example `parallel for reduction` replaces manual thread creation, chunking and joining.
 - **OpenMP at 1 thread** was slightly slower than the sequential baseline (0.91×) because of the OpenMP runtime overhead and run-to-run noise.
-- **Measured results depend on hardware.** These numbers come from a 4-CPU VM, so they will differ on other machines.
+- **Run-to-run variation:** the `performance.png` screenshot is from a later, faster run (sequential about 1.97 s, 4 threads about 0.73 s). Timings change between runs on this VM, so the tables and graphs above use the earlier full set of measurements. In both runs the speedup at 4 threads was about 2.7× to 2.8×.
+- **Measured results depend on hardware.** These numbers come from a 4-CPU VM, so they will differ on other machines and from the reference manual.
 
 ---
 
