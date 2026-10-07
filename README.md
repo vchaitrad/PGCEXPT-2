@@ -7,7 +7,7 @@
 
 ---
 
-##  Aim
+## 📌 Aim
 
 To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show a **race condition** and fix it with a **mutex** (Pthreads) and **critical** (OpenMP), to show **barrier** synchronization, and to compare performance for 1, 2, 4, 6 and 16 threads against a sequential baseline.
 
@@ -19,11 +19,11 @@ To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show 
 | 4 | OpenMP race + critical + barrier | same race, fixed with critical, stages with barrier |
 | 5 | Performance | sequential vs Pthreads vs OpenMP, speedup and efficiency |
 
-**Performance problem:** sum of `i * 0.000001` for i = 0 to N-1 with N = 1,000,000,000. The correct answer is `499999999500.00`, used as the verification check.
+**Problem:** The performance program sums `i * 0.000001` for i = 0 to N-1 with N = 1,000,000,000. The correct answer is `499999999500.00`. This is used as the verification check.
 
 ---
 
-##  Environment
+## 🖥️ Environment
 
 | Item | Details |
 |------|---------|
@@ -34,12 +34,14 @@ To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show 
 | Pthreads | `gcc file.c -o file -pthread` |
 | OpenMP | `gcc file.c -o file -fopenmp` |
 
+> **Note:** All programs ran on a 4-CPU VM whose virtual CPUs are shared with the host, so timings change from run to run (the five sequential runs ranged from 3.33 s to 4.20 s).
+
 ---
 
-##  Repository Structure
+## 📁 Repository Structure
 
 ```
-PGCEXPT-2/
+EXPT2-PGC/
 ├── README.md
 ├── results.txt
 ├── make_graphs.py
@@ -75,7 +77,7 @@ PGCEXPT-2/
 
 ---
 
-##  How to Compile and Run
+## ▶️ How to Compile and Run
 
 ```bash
 # Pthreads
@@ -108,24 +110,36 @@ gcc omp_perf.c     -o omp_perf     -fopenmp
 
 ## 📊 Results
 
+All performance versions produced the correct verification value 499999999500.00.
+
 ### Part 1: Correctness and synchronization
 
 The `race` and `omp_race` programs have no locking on purpose. A wrong count is the expected result there, and it proves the race condition. The `mutex` and `critical` versions fix it.
 
 | Program | Synchronization | Expected | Actual | Observation |
 |---------|-----------------|----------|--------|-------------|
-| thread_sum (4 threads) | none needed (separate array parts) | 360 | 360 (30 + 70 + 110 + 150) |  Correct |
-| race (Pthreads) | none | 400000 | 372066 and 307008 (two runs) |  Race condition demonstrated (count lost, changes each run) |
-| mutex (Pthreads) | mutex lock | 400000 | 400000 |  Race fixed |
-| omp_sum | reduction | 360 | 360 |  Correct |
-| omp_race (OpenMP) | none | 400000 | 315964 |  Race condition demonstrated (count lost) |
-| omp_critical (OpenMP) | critical section | 400000 | 400000 |  Race fixed |
+| thread_sum (4 threads) | none needed (separate array parts) | 360 | 360 (30 + 70 + 110 + 150) | ✅ Correct |
+| race (Pthreads) | none | 400000 | 360173 and 170001 (two runs) | ✅ Race condition demonstrated (count lost, changes each run) |
+| mutex (Pthreads) | mutex lock | 400000 | 400000 | ✅ Race fixed |
+| omp_sum | reduction | 360 | 360 | ✅ Correct |
+| omp_race (OpenMP) | none | 400000 | 293558 | ✅ Race condition demonstrated (count lost) |
+| omp_critical (OpenMP) | critical section | 400000 | 400000 | ✅ Race fixed |
 
 `omp_barrier`: all four threads printed "completed Stage 1" before any thread printed "started Stage 2".
 
 ### Part 2: Performance
 
+Summary at 4 threads:
+
+| Implementation | Resources | Time (s) | Speedup | Verification |
+|----------------|-----------|----------|---------|--------------|
+| Sequential | 1 CPU core | 3.774000 | 1.00× | ✅ 499999999500.00 |
+| Pthreads | 4 threads | 1.342439 | 2.81× | ✅ 499999999500.00 |
+| OpenMP | 4 threads | 1.328977 | 2.84× | ✅ 499999999500.00 |
+
 Sequential baseline: five runs of 3.331169, 3.822338, 3.496280, 4.020941 and 4.199273 s, average **3.774000 s**.
+
+Results for all thread counts:
 
 | Threads | Pthreads time (s) | Speedup | Efficiency | OpenMP time (s) | Speedup | Efficiency |
 |---------|-------------------|---------|------------|-----------------|---------|------------|
@@ -135,11 +149,11 @@ Sequential baseline: five runs of 3.331169, 3.822338, 3.496280, 4.020941 and 4.1
 | 6  | 1.419750 | 2.66× | 44.3%  | 1.439114 | 2.62× | 43.7% |
 | 16 | 1.355168 | 2.78× | 17.4%  | 1.349932 | 2.80× | 17.5% |
 
-**Speedup** = sequential time / parallel time  |  **Efficiency** = (speedup / threads) × 100
+**Speedup formula:** Speedup = Sequential time / Parallel time
 
 ---
 
-##  Performance Graphs
+## 📈 Performance Graphs
 
 ### Execution Time
 ![Execution Time](graphs/execution_time.png)
@@ -148,38 +162,50 @@ Sequential baseline: five runs of 3.331169, 3.822338, 3.496280, 4.020941 and 4.1
 ![Speedup](graphs/speedup.png)
 
 ### Parallel Efficiency
+Efficiency = speedup / number of threads.
+
+| Implementation | Speedup | Efficiency |
+|----------------|---------|------------|
+| Pthreads (4 threads) | 2.81× | 70.3% |
+| OpenMP (4 threads) | 2.84× | 71.0% |
+
 ![Efficiency](graphs/efficiency.png)
 
 ---
 
-##  Screenshots
+## 📷 Screenshots
 
-### Pthreads
+### Part A: Pthreads basics
 ![Pthreads basic](screenshots/pthreads_basic.png)
+
+### Part B: Pthreads race condition and mutex
 ![Pthreads race and mutex](screenshots/pthreads_race_mutex.png)
 
-### OpenMP
+### Part C: OpenMP basics and barrier
 ![OpenMP basic](screenshots/openmp_basic.png)
+
+### Part D: OpenMP race condition and critical
 ![OpenMP race and critical](screenshots/openmp_race_critical.png)
 
-### Performance
+### Part E: Performance
 ![Performance](screenshots/performance.png)
 
 ---
 
-##  Observations
+## 🔍 Observations
 
-- **Race condition:** `counter++` is not one step. It is load, add and store. When 4 threads do this at the same time, updates overwrite each other, so the counter ended below 400000 (372066 and 307008 with Pthreads, 315964 with OpenMP) and changed on every run.
+- **Race condition:** `counter++` is not one step. It is load, add and store. When 4 threads do this at the same time, updates overwrite each other, so the counter ended below 400000 (360173 and 170001 with Pthreads, 293558 with OpenMP) and changed on every run.
 - **Fix:** a Pthreads mutex and an OpenMP critical section let only one thread update the counter at a time. Both gave exactly 400000.
 - **Scaling:** time dropped from about 3.7 s (1 thread) to about 1.34 s at 4 threads, a speedup of about 2.8×. This is the best result because the VM has 4 logical CPUs.
 - **6 and 16 threads:** no improvement over 4 threads (about 1.35 to 1.44 s). With only 4 CPUs, extra threads just wait for a core and add scheduling overhead, so efficiency fell to about 44% at 6 threads and about 17% at 16 threads.
 - **Not perfectly linear:** 4 threads gave 2.8× instead of 4× because the VM's virtual CPUs are shared with the host and other programs. The five sequential runs varied from 3.33 to 4.20 s, so timings on this VM are noisy.
 - **Pthreads vs OpenMP:** performance was almost the same (1.342 s vs 1.329 s at 4 threads). OpenMP needs far less code, for example `parallel for reduction` replaces manual thread creation, chunking and joining.
 - **OpenMP at 1 thread** was slightly slower than the sequential baseline (0.91×) because of the OpenMP runtime overhead and run-to-run noise.
+- **Measured results depend on hardware.** These numbers come from a 4-CPU VM, so they will differ on other machines.
 
 ---
 
-##  Conclusion
+## ✅ Conclusion
 
 Multithreaded programs were written with Pthreads and OpenMP. The unsynchronized counter produced wrong results, and a mutex (Pthreads) and critical (OpenMP) fixed it. For the 1,000,000,000-iteration sum, both models gave a speedup of about 2.8× with 4 threads on the 4-CPU VM, and using more threads than CPU cores gave no further gain and lowered efficiency. Pthreads gives low-level control, while OpenMP gives the same performance with much simpler code.
 
