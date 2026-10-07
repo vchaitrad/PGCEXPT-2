@@ -1,6 +1,8 @@
 # Experiment 2: Multithreaded Programming
 ### Pthreads · OpenMP · Race Condition · Synchronization · Performance
 
+`C` `Pthreads` `OpenMP` `Mutex` `Synchronization` `Multithreading`
+
 **Name:** Chaitra  |  **Roll No:** 253  |  **Course:** PG Parallel Computing
 
 ---
@@ -37,7 +39,7 @@ To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show 
 ## 📁 Repository Structure
 
 ```
-EXPT2-PGC/
+PGCEXPT-2/
 ├── README.md
 ├── results.txt
 ├── make_graphs.py
@@ -108,14 +110,16 @@ gcc omp_perf.c     -o omp_perf     -fopenmp
 
 ### Part 1: Correctness and synchronization
 
-| Program | Expected | Actual | Result |
-|---------|----------|--------|--------|
-| thread_sum (4 threads) | 360 | 360 (30 + 70 + 110 + 150) | ✅ Correct |
-| race (Pthreads, no lock) | 400000 | 372066 and 307008 (two runs) | ❌ Race condition |
-| mutex (Pthreads, with lock) | 400000 | 400000 | ✅ Correct |
-| omp_sum (reduction) | 360 | 360 | ✅ Correct |
-| omp_race (no protection) | 400000 | 315964 | ❌ Race condition |
-| omp_critical (critical) | 400000 | 400000 | ✅ Correct |
+The `race` and `omp_race` programs have no locking on purpose. A wrong count is the expected result there, and it proves the race condition. The `mutex` and `critical` versions fix it.
+
+| Program | Synchronization | Expected | Actual | Observation |
+|---------|-----------------|----------|--------|-------------|
+| thread_sum (4 threads) | none needed (separate array parts) | 360 | 360 (30 + 70 + 110 + 150) | ✅ Correct |
+| race (Pthreads) | none | 400000 | 372066 and 307008 (two runs) | ✅ Race condition demonstrated (count lost, changes each run) |
+| mutex (Pthreads) | mutex lock | 400000 | 400000 | ✅ Race fixed |
+| omp_sum | reduction | 360 | 360 | ✅ Correct |
+| omp_race (OpenMP) | none | 400000 | 315964 | ✅ Race condition demonstrated (count lost) |
+| omp_critical (OpenMP) | critical section | 400000 | 400000 | ✅ Race fixed |
 
 `omp_barrier`: all four threads printed "completed Stage 1" before any thread printed "started Stage 2".
 
