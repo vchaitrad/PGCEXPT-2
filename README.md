@@ -7,7 +7,7 @@
 
 ---
 
-## 📌 Aim
+##  Aim
 
 To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show a **race condition** and fix it with a **mutex** (Pthreads) and **critical** (OpenMP), to show **barrier** synchronization, and to compare performance for 1, 2, 4, 6 and 16 threads against a sequential baseline.
 
@@ -23,7 +23,7 @@ To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show 
 
 ---
 
-## 🖥️ Environment
+##  Environment
 
 | Item | Details |
 |------|---------|
@@ -36,7 +36,7 @@ To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show 
 
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 
 ```
 PGCEXPT-2/
@@ -75,7 +75,7 @@ PGCEXPT-2/
 
 ---
 
-## ▶️ How to Compile and Run
+##  How to Compile and Run
 
 ```bash
 # Pthreads
@@ -114,12 +114,12 @@ The `race` and `omp_race` programs have no locking on purpose. A wrong count is 
 
 | Program | Synchronization | Expected | Actual | Observation |
 |---------|-----------------|----------|--------|-------------|
-| thread_sum (4 threads) | none needed (separate array parts) | 360 | 360 (30 + 70 + 110 + 150) | ✅ Correct |
-| race (Pthreads) | none | 400000 | 372066 and 307008 (two runs) | ✅ Race condition demonstrated (count lost, changes each run) |
-| mutex (Pthreads) | mutex lock | 400000 | 400000 | ✅ Race fixed |
-| omp_sum | reduction | 360 | 360 | ✅ Correct |
-| omp_race (OpenMP) | none | 400000 | 315964 | ✅ Race condition demonstrated (count lost) |
-| omp_critical (OpenMP) | critical section | 400000 | 400000 | ✅ Race fixed |
+| thread_sum (4 threads) | none needed (separate array parts) | 360 | 360 (30 + 70 + 110 + 150) |  Correct |
+| race (Pthreads) | none | 400000 | 372066 and 307008 (two runs) |  Race condition demonstrated (count lost, changes each run) |
+| mutex (Pthreads) | mutex lock | 400000 | 400000 |  Race fixed |
+| omp_sum | reduction | 360 | 360 |  Correct |
+| omp_race (OpenMP) | none | 400000 | 315964 |  Race condition demonstrated (count lost) |
+| omp_critical (OpenMP) | critical section | 400000 | 400000 |  Race fixed |
 
 `omp_barrier`: all four threads printed "completed Stage 1" before any thread printed "started Stage 2".
 
@@ -139,7 +139,7 @@ Sequential baseline: five runs of 3.331169, 3.822338, 3.496280, 4.020941 and 4.1
 
 ---
 
-## 📈 Performance Graphs
+##  Performance Graphs
 
 ### Execution Time
 ![Execution Time](graphs/execution_time.png)
@@ -152,7 +152,7 @@ Sequential baseline: five runs of 3.331169, 3.822338, 3.496280, 4.020941 and 4.1
 
 ---
 
-## 📷 Screenshots
+##  Screenshots
 
 ### Pthreads
 ![Pthreads basic](screenshots/pthreads_basic.png)
@@ -167,7 +167,7 @@ Sequential baseline: five runs of 3.331169, 3.822338, 3.496280, 4.020941 and 4.1
 
 ---
 
-## 🔍 Observations
+##  Observations
 
 - **Race condition:** `counter++` is not one step. It is load, add and store. When 4 threads do this at the same time, updates overwrite each other, so the counter ended below 400000 (372066 and 307008 with Pthreads, 315964 with OpenMP) and changed on every run.
 - **Fix:** a Pthreads mutex and an OpenMP critical section let only one thread update the counter at a time. Both gave exactly 400000.
@@ -179,7 +179,7 @@ Sequential baseline: five runs of 3.331169, 3.822338, 3.496280, 4.020941 and 4.1
 
 ---
 
-## ✅ Conclusion
+##  Conclusion
 
 Multithreaded programs were written with Pthreads and OpenMP. The unsynchronized counter produced wrong results, and a mutex (Pthreads) and critical (OpenMP) fixed it. For the 1,000,000,000-iteration sum, both models gave a speedup of about 2.8× with 4 threads on the 4-CPU VM, and using more threads than CPU cores gave no further gain and lowered efficiency. Pthreads gives low-level control, while OpenMP gives the same performance with much simpler code.
 
