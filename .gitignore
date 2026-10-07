@@ -1,0 +1,9 @@
+*
+!*/
+!*.c
+!*.md
+!*.txt
+!*.py
+!*.png
+!*.docx
+!.gitignore
