@@ -34,7 +34,8 @@ To write multithreaded programs in C using **Pthreads** and **OpenMP**, to show 
 | Pthreads | `gcc file.c -o file -pthread` |
 | OpenMP | `gcc file.c -o file -fopenmp` |
 
-> **Note:** All programs ran on a 4-CPU VM whose virtual CPUs are shared with the host, so timings change from run to run (the five sequential runs ranged from 3.33 s to 4.20 s).
+> **Note:** The reference manual was run on Windows with WSL Ubuntu, where OpenMP used 32 threads and 16 threads gave about 9.6× speedup (sequential baseline 1.35 s). Here the programs ran on a VMware Ubuntu VM with only 4 logical CPUs, so speedup stops at about 2.8× with 4 threads and more threads give no further gain. Absolute times therefore differ from the manual.
+
 
 ---
 
